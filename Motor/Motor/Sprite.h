@@ -1,5 +1,6 @@
 #pragma once
 #include <GL/glew.h>
+using namespace std;
 
 class Sprite
 {
@@ -8,7 +9,7 @@ private:
 	float y;
 	int width;
 	int height;
-	//TODO VBO
+	GLuint vboID;
 public:
 	Sprite();
 	~Sprite();
