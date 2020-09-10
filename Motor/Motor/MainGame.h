@@ -1,6 +1,9 @@
 #pragma once
 #include <SDL/SDL.h>
 #include <GL/glew.h>
+#include "Sprite.h"
+#include "GLProgram.h"
+
 enum class GameState
 {
 	PLAY,EXIT
@@ -11,10 +14,12 @@ class MainGame
 private:
 	int witdh;
 	int height;
+	GLProgram glProgram;
 	SDL_Window* window;
-	//TODO-Sprite
+	Sprite sprite;
 	void processInput();
 	void init();
+	void initShaders();
 public:
 	MainGame();
 	~MainGame();

@@ -1,2 +1,5 @@
-﻿  Sprite.cpp
+﻿  GLProgram.cpp
+  main.cpp
+  MainGame.cpp
+  Generating Code...
   Motor.vcxproj -> C:\Users\Luis\Documents\Fundamentos\Motor\Debug\Motor.exe
