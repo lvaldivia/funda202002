@@ -72,6 +72,10 @@ void MainGame::draw()
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glProgram.use();
+	GLuint timeLocation = glProgram.getUniformLocation("times");
+
+	glUniform1f(timeLocation, time);
+	time += 0.0002;
 	sprite.draw();
 	glProgram.unuse();
 	SDL_GL_SwapWindow(window);

@@ -1,5 +1,3 @@
-﻿  GLProgram.cpp
-  MainGame.cpp
-  main.cpp
-  Generating Code...
+﻿  MainGame.cpp
+C:\Users\Luis\Documents\Fundamentos\Motor\Motor\MainGame.cpp(78,16): warning C4305: '+=': truncation from 'double' to 'float'
   Motor.vcxproj -> C:\Users\Luis\Documents\Fundamentos\Motor\Debug\Motor.exe
