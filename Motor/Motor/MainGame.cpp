@@ -1,5 +1,6 @@
 #include "MainGame.h"
 #include <iostream>
+#include "Error.h"
 
 using namespace std;
 
@@ -11,6 +12,7 @@ MainGame::MainGame()
 	witdh = 800;
 	height = 600;
 	gameState = GameState::PLAY;
+	time = 0;
 }
 
 MainGame::~MainGame()
@@ -20,6 +22,9 @@ MainGame::~MainGame()
 void MainGame::initShaders() {
 	glProgram.compileShaders("Shaders/colorShaderVert.txt",
 		"Shaders/colorShaderFrag.txt");
+	glProgram.AddAtribute("vertexPosition");
+	glProgram.AddAtribute("vertexColor");
+	glProgram.linkShader();
 }
 
 void MainGame::run()
@@ -38,7 +43,7 @@ void MainGame::processInput()
 			gameState = GameState::EXIT;
 			break;
 		case SDL_MOUSEMOTION:
-			cout << event.motion.x <<  " , " << event.motion.y << endl;
+			//cout << event.motion.x <<  " , " << event.motion.y << endl;
 			break;
 		}
 	}
@@ -46,16 +51,16 @@ void MainGame::processInput()
 
 void MainGame::init()
 {
-	window = SDL_CreateWindow("Clase 01", SDL_WINDOWPOS_CENTERED,
+	window = SDL_CreateWindow("GAAAA :v", SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED, witdh, height, SDL_WINDOW_OPENGL);
 	if (window == nullptr) {
-		//TODO mostrar error de SDL
+		fatalError("Error in loading SDL_Windows");
 	}
 	SDL_GLContext glContext = SDL_GL_CreateContext(window);
 
 	GLenum error = glewInit();
 	if (error != GLEW_OK) {
-		//TODO mostrar error de Glew
+		fatalError("Error in loading Glew");
 	}
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
@@ -66,7 +71,9 @@ void MainGame::draw()
 {
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glProgram.use();
 	sprite.draw();
+	glProgram.unuse();
 	SDL_GL_SwapWindow(window);
 }
 

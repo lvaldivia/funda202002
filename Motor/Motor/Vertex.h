@@ -6,15 +6,25 @@ struct Position {
 	float y;
 };
 
-struct Position2 {
-	float x;
-	float y;
+
+struct Color {
+	GLubyte r;
+	GLubyte g;
+	GLubyte b;
+	GLubyte a;
+
 };
 
 struct Vertex {
-	Position2 position2;
 	Position position;
-	
+	Color color;
+
+	void setColor(GLubyte r, GLubyte g, GLubyte b , GLubyte a) {
+		color.r = r;
+		color.g = g;
+		color.b = b;
+		color.a = a;
+	}
 
 	void setPosition(float _x,float _y) {
 		position.x = _x;

@@ -20,6 +20,7 @@ private:
 	void processInput();
 	void init();
 	void initShaders();
+	float time;
 public:
 	MainGame();
 	~MainGame();

@@ -1,8 +1,12 @@
 #include "GLProgram.h"
+#include "Error.h"
 #include <fstream>
 #include <vector>
 
-GLProgram::GLProgram() : programID(0), vertexShaderID(0), fragmentShaderID(0)
+GLProgram::GLProgram() : programID(0), 
+	vertexShaderID(0), 
+	fragmentShaderID(0), 
+	numAttribute(0)
 {
 }
 
@@ -12,11 +16,11 @@ void GLProgram::compileShaders(const string& vertexShaderFilePath, const string&
 	programID = glCreateProgram();
 	vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	if (vertexShaderID == 0) {
-		//TODO show Error
+		fatalError("Can't create VERTEX_SHADER");
 	}
 	fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 	if (fragmentShaderID == 0) {
-		//TODO show Error
+		fatalError("Can't create FRAGMENT_SHADER");
 	}
 	compileShader(vertexShaderFilePath, vertexShaderID);
 	compileShader(fragmentShaderFilePath, fragmentShaderID);
@@ -31,7 +35,7 @@ void GLProgram::compileShader(const string& shaderPath, GLuint id)
 
 	ifstream shaderFile(shaderPath);
 	if (shaderFile.fail()) {
-		//TODO Error
+		fatalError("Could not open " + shaderPath);
 	}
 	while (getline(shaderFile, line)) {
 		fileContent += line + "\n";
@@ -47,10 +51,45 @@ void GLProgram::compileShader(const string& shaderPath, GLuint id)
 		GLint maxLenght = 0;
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLenght);
 		std::vector<GLchar> errorLog(maxLenght);
+		
 		glGetShaderInfoLog(id, maxLenght, &maxLenght, &errorLog[0]);
+		fatalError("Shaders do not compile " + printf("%s", &(errorLog[0])));
 		glDeleteShader(id);
 		return;
 	}
+}
+
+void GLProgram::AddAtribute(const string& atributeName)
+{
+	glBindAttribLocation(programID, numAttribute++, atributeName.c_str());
+}
+
+void GLProgram::use()
+{
+	glUseProgram(programID);
+	for (int i = 0; i < numAttribute; i++)
+	{
+		glEnableVertexAttribArray(i);
+	}
+
+}
+
+void GLProgram::unuse()
+{
+	glUseProgram(programID);
+	for (int i = 0; i < numAttribute; i++)
+	{
+		glDisableVertexAttribArray(i);
+	}
+}
+
+GLuint GLProgram::getUniformLocation(const string& name)
+{
+	GLuint location = glGetUniformLocation(programID, name.c_str());
+	if (location == GL_INVALID_ENUM) {
+		fatalError("Uniform " + name + " not found in shader");
+	}
+	return location;
 }
 
 void GLProgram::linkShader()
@@ -67,6 +106,7 @@ void GLProgram::linkShader()
 		std::vector<GLchar> infoLog(maxLenght);
 		glGetProgramInfoLog(programID, maxLenght, &maxLenght, &infoLog[0]);
 		glDeleteProgram(programID);
+		fatalError("Shaders do not linked " + printf("%s",&(infoLog[0])));
 		glDeleteShader(vertexShaderID);
 		glDeleteShader(fragmentShaderID);
 		return;
