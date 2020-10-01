@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include "Sprite.h"
 #include "GLProgram.h"
+#include "Window.h"
 
 enum class GameState
 {
@@ -15,7 +16,7 @@ private:
 	int witdh;
 	int height;
 	GLProgram glProgram;
-	SDL_Window* window;
+	Window window;
 	Sprite sprite;
 	void processInput();
 	void init();

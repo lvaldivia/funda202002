@@ -8,7 +8,6 @@ using namespace std;
 MainGame::MainGame() 
 	//: window(nullptr),witdh(800),height(600), gameState(GameState::PLAY)
 {
-	window = nullptr;
 	witdh = 800;
 	height = 600;
 	gameState = GameState::PLAY;
@@ -24,13 +23,14 @@ void MainGame::initShaders() {
 		"Shaders/colorShaderFrag.txt");
 	glProgram.AddAtribute("vertexPosition");
 	glProgram.AddAtribute("vertexColor");
+	glProgram.AddAtribute("vertexUV");
 	glProgram.linkShader();
 }
 
 void MainGame::run()
 {
 	init();
-	sprite.init(-1, -1, 1, 1);
+	sprite.init(-1, -1, 1, 1,"Images/mario.png");
 	update();
 }
 
@@ -51,19 +51,7 @@ void MainGame::processInput()
 
 void MainGame::init()
 {
-	window = SDL_CreateWindow("GAAAA :v", SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED, witdh, height, SDL_WINDOW_OPENGL);
-	if (window == nullptr) {
-		fatalError("Error in loading SDL_Windows");
-	}
-	SDL_GLContext glContext = SDL_GL_CreateContext(window);
-
-	GLenum error = glewInit();
-	if (error != GLEW_OK) {
-		fatalError("Error in loading Glew");
-	}
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+	window.create("GAAA", witdh, height);
 	initShaders();
 }
 
@@ -72,13 +60,16 @@ void MainGame::draw()
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glProgram.use();
+	
 	GLuint timeLocation = glProgram.getUniformLocation("time");
-
 	glUniform1f(timeLocation, time);
+	GLuint imageLocation = glProgram.getUniformLocation("image");
+	glUniform1i(imageLocation, 0);
+
 	time += 0.0002;
 	sprite.draw();
 	glProgram.unuse();
-	SDL_GL_SwapWindow(window);
+	window.swapBuffer();
 }
 
 void MainGame::update()
